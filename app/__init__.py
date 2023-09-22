@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-#from sqlalchemy.exc import SQLAlchemyError  # Importa SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError  # Importa SQLAlchemyError
 from dotenv import load_dotenv
 
 

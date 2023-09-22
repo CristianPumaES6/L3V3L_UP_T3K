@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+     <!-- Agrega jQuery -->
+     <script src="{{ url_for('static', filename='lib/jquery-3.7.1.min.js') }}"></script>
+</head>
+<body>
+    <h1>Registro de Usuario</h1>
+
+
+    <form id="registration-form">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        <br>
+
+        <label for="apellidos">Apellidos:</label>
+        <input type="text" id="apellidos" name="apellidos" required>
+        <br>
+
+        <label for="dni">DNI único:</label>
+        <input type="text" id="dni" name="dni" required>
+        <br>
+
+        <label for="nick">NICK único:</label>
+        <input type="text" id="nick" name="nick" required>
+        <br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+
+        <label for="foto">Foto:</label>
+        <input type="file" id="foto" name="foto">
+        <br>
+        <button type="button" id="register-button">Registrarse</button>
+    </form>
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            // Captura el evento de clic en el botón de registro
+            $("#register-button").click(function () {
+                // Obtén los valores de los campos del formulario
+                var nombre = $("#nombre").val();
+                var apellidos = $("#apellidos").val();
+                var dni = $("#dni").val();
+                var nick = $("#nick").val();
+                var password = $("#password").val();
+                // Para la foto, puedes obtener el archivo seleccionado si es necesario
+    
+                // Crea un objeto de datos en formato JSON
+                var userData = {
+                    nombre: nombre,
+                    apellidos: apellidos,
+                    dni: dni,
+                    nick: nick,
+                    password: password,
+                    // Agrega otros campos aquí según sea necesario
+                };
+    
+                // Realiza la solicitud AJAX POST
+                $.ajax({
+                    type: "POST",
+                    url: "/register",  // Ruta de la API Flask
+                    contentType: "application/json",  // Especifica el tipo de contenido JSON
+                    data: JSON.stringify(userData),  // Convierte los datos a JSON
+                    success: function (response) {
+                        // Maneja la respuesta exitosa
+                        console.log("Registro exitoso:", response);
+                        alert(response)
+                        // Puedes redirigir o mostrar un mensaje de éxito aquí
+                    },
+                    error: function (error) {
+                        // Maneja el error
+                        console.error("Error en el registro:", error);
+                        // Puedes mostrar un mensaje de error o manejarlo de otra manera
+                    }
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>
