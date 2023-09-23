@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Usuario</title>
-     <!-- Agrega jQuery -->
-     <script src="{{ url_for('static', filename='lib/jquery-3.7.1.min.js') }}"></script>
+    <!-- Agregamos jQuery -->
+    <script src="{{ url_for('static', filename='lib/jquery-3.7.1.min.js') }}"></script>
 </head>
+
 <body>
     <h1>Registro de Usuario</h1>
 
@@ -52,38 +54,53 @@
                 var nick = $("#nick").val();
                 var password = $("#password").val();
                 // Para la foto, puedes obtener el archivo seleccionado si es necesario
-    
-                // Crea un objeto de datos en formato JSON
-                var userData = {
-                    nombre: nombre,
-                    apellidos: apellidos,
-                    dni: dni,
-                    nick: nick,
-                    password: password,
-                    // Agrega otros campos aquí según sea necesario
-                };
-    
-                // Realiza la solicitud AJAX POST
-                $.ajax({
-                    type: "POST",
-                    url: "/register",  // Ruta de la API Flask
-                    contentType: "application/json",  // Especifica el tipo de contenido JSON
-                    data: JSON.stringify(userData),  // Convierte los datos a JSON
-                    success: function (response) {
-                        // Maneja la respuesta exitosa
-                        console.log("Registro exitoso:", response);
-                        alert(response)
-                        // Puedes redirigir o mostrar un mensaje de éxito aquí
-                    },
-                    error: function (error) {
-                        // Maneja el error
-                        console.error("Error en el registro:", error);
-                        // Puedes mostrar un mensaje de error o manejarlo de otra manera
-                    }
-                });
+
+                // Hashear la contraseña utilizando crypto.subtle
+                window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))
+                    .then(function (hashBuffer) {
+                        // Convertir el resultado del hash a una cadena hexadecimal
+                        var hashArray = Array.from(new Uint8Array(hashBuffer));
+                        var hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+
+                        // Crea un objeto de datos en formato JSON con la contraseña hasheada
+                        var userData = {
+                            nombre: nombre,
+                            apellidos: apellidos,
+                            dni: dni,
+                            nick: nick,
+                            password: hashHex,
+                            // Agrega otros campos aquí según sea necesario
+                        };
+
+                        // Realiza la solicitud AJAX POST con la contraseña hasheada
+                        $.ajax({
+                            type: "POST",
+                            url: "/register",  // Ruta de la API Flask
+                            contentType: "application/json",  // Especifica el tipo de contenido JSON
+                            data: JSON.stringify(userData),  // Convierte los datos a JSON
+                            success: function (response) {
+                                // Maneja la respuesta exitosa
+                                console.log("Registro exitoso:", response);
+                                // Supongamos que has recibido el token en la respuesta del servidor y lo guardas en una variable llamada 'token'
+                                var token = response.access_token; // Asegúrate de obtener el token de la respuesta
+
+                                // Establece la cookie con el nombre 'jwt_token' y el valor del token
+                                Cookies.set('jwt_token', token, { expires: 7 }); // Aquí, 'expires' establece la duración de la cookie en días (ajusta según tus necesidades)
+                            },
+                            error: function (error) {
+                                // Maneja el error
+                                console.error("Error en el registro:", error);
+                                // Puedes mostrar un mensaje de error o manejarlo de otra manera
+                            }
+                        });
+                    })
+                    .catch(function (err) {
+                        console.error(err);
+                    });
             });
         });
     </script>
-    
+
 </body>
+
 </html>
