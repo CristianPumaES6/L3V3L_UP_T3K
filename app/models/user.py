@@ -6,7 +6,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
     apellidos = db.Column(db.String(255))
-    dni = db.Column(db.String(9), unique=True, nullable=False)
+    dni = db.Column(db.String(50), unique=True, nullable=False)
     nick = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     foto = db.Column(db.String(255))  # Ruta o nombre de archivo de la foto

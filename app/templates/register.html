@@ -107,7 +107,7 @@
                                 // Maneja la respuesta exitosa
                                 console.log("Registro exitoso:", response);
                                 // Supongamos que has recibido el token en la respuesta del servidor y lo guardas en una variable llamada 'token'
-                                var token = response.access_token; // Asegúrate de obtener el token de la respuesta
+                                var  token = response.access_token; // Asegúrate de obtener el token de la respuesta
 
                                 // Establece la cookie utilizando jQuery
                                 Cookies.set('jwt_token', token, { expires: 7 });
@@ -115,7 +115,7 @@
                                 $("#error-message").text(response.message);
                                 if(response.message== "Nuevo usuario registrado.")
                                     // Redirige al usuario a la página de inicio de sesión
-                                    window.location.href = "/register"; // Reemplaza "/login" con la URL real de tu página de inicio de sesión
+                                    window.location.href = "/updateImage"; // Reemplaza "/login" con la URL real de tu página de inicio de sesión
                             },
                             error: function (error) {
 

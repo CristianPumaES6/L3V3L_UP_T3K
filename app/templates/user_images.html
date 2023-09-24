@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imágenes del Usuario</title>
+    <!-- Incluye los enlaces a Bootstrap, jQuery y tus hojas de estilo personalizadas -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='lib/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/js.cookie.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/styles.css') }}">
+    <!-- Estilos adicionales específicos para esta página -->
+    <style>
+        /* Estilos para el encabezado */
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        /* Estilos para el formulario */
+        #profile-picture-form {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Estilos para el botón del formulario */
+        #profile-picture-form button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Estilos para el botón del formulario al pasar el mouse sobre él */
+        #profile-picture-form button:hover {
+            background-color: #2775b6;
+        }
+
+        /* Estilos para el mensaje de error */
+        #error-message {
+            color: #ff0000;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Estilos para la etiqueta "Subir nueva foto de perfil" */
+        .bold {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        /* Estilos para las tarjetas de imágenes */
+        .image-card {
+            background-color: #333;
+            color: #fff;
+            border: 2px solid #3498db;
+            width: 100%;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-card img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .image-card p {
+            margin: 10px 0;
+        }
+
+        /* Estilos para el formulario de carga de imágenes */
+        #image-upload-form {
+            margin-top: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .image-card {
+                width: 48%;
+                margin-right: 2%;
+            }
+
+            .image-card:nth-child(2n) {
+                margin-right: 0;
+            }
+        }
+
+        /* Estilos para la tarjeta de usuario tipo carné universitario */
+        .user-card {
+            background-color: #333;
+            color: #fff;
+            border: 2px solid #3498db;
+            width: 450px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .user-image {
+            text-align: center;
+        }
+
+        .user-image img {
+            width: 200px;
+            max-width: 250px;
+            height: auto;
+            border: 2px solid #3498db;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .user-info {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .user-info h2 {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .user-info p {
+            margin: 10px 0;
+        }
+
+        /* Estilo para la línea divisoria */
+        .divider {
+            border-top: 2px solid #3498db;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        /* Estilos para dispositivos móviles */
+        @media (max-width: 768px) {
+            .user-card {
+                width: 90%;
+            }
+
+            .user-image {
+                flex: 0 0 50%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <br><br>
+    <div class="container">
+        <div class="row">
+            <!-- Columna 1 - Información del Usuario -->
+            <div class="col-md-6">
+
+                <br><br>
+                <div id="current-profile-picture" class="user-card">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="user-image">
+                                <img src="" alt="Imagen de perfil actual" id="current-picture">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="user-info">
+                                <h2>Información de Usuario</h2>
+                                <p id="user-nombre"></p>
+                                <div class="divider"></div>
+                                <p id="user-apellidos"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Columna 2 - Opción de Subir Fotos -->
+            <div class="col-md-6">
+                <h1 class="text-center mt-4 tilte-white">Procesa tus imágenes, obtén el texto rápido y gratis!</h1>
+
+                <!-- Formulario para actualizar la foto de perfil -->
+                <form id="profile-picture-form" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="foto" class="font-weight-bold">Subir nueva foto de perfil:</label>
+                        <input type="file" class="form-control" name="foto" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Actualizar Foto de Perfil</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <p id="error-message" class="text-danger mt-2"></p>
+        </div>
+        <div class="divider"></div>
+                        
+        <div class="row">
+            <p id="error-message" class="text-danger mt-2"></p>
+
+            <h2 class="tilte-white">Imágenes del Usuario</h2>
+            <div id="image-gallery" class="row">
+                <!-- Aquí se cargarán las tarjetas de imágenes -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Función para cargar las imágenes del usuario
+        function loadUserImages() {
+            // Obtener el token JWT almacenado en las cookies
+            var token = Cookies.get('jwt_token'); // Asegúrate de que el nombre de la cookie coincida con tu configuración
+
+            // Verifica si se ha almacenado un token JWT en las cookies
+            if (token) {
+                $.ajax({
+                    type: "POST",
+                    url: "/userImages", // Ruta para obtener las imágenes del usuario
+                    headers: {
+                        Authorization: "Bearer " + token // Agrega el token JWT como encabezado de autorización
+                    },
+                    success: function (images) {
+                        // Itera sobre las imágenes y crea las tarjetas de imágenes
+                        for (var i = 0; i < images.length; i++) {
+                            var image = images[i];
+                            var imageCard = `
+                                <div class="col-3 col-md-3 col-sm-4 image-card">
+                                    <img src="/get_profile_picture/${image.ubicacion}" alt="Imagen ${image.id}">
+                                    <p>Fecha de Registro: ${image.fecha_registro}</p>
+                                    <p>Ubicación: ${image.ubicacion}</p>
+                                    <p>ID de Usuario: ${image.user_id}</p>
+                                </div>
+                            `;
+                            $("#image-gallery").append(imageCard);
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Error al obtener las imágenes del usuario:", error);
+                    }
+                });
+            } else {
+                console.error("No se encontró un token JWT en las cookies.");
+                // Puedes manejar la situación en la que no se encuentra un token JWT aquí
+            }
+        }
+
+        // Función para mostrar la información del usuario
+        function displayUserInfo() {
+            // Obtener el token JWT almacenado en las cookies
+            var token = Cookies.get('jwt_token'); // Asegúrate de que el nombre de la cookie coincida con tu configuración
+            $.ajax({
+                type: "GET",
+                url: "/user_info", // Ruta para obtener la información del usuario
+                processData: false,
+                contentType: false,
+                headers: {
+                    Authorization: "Bearer " + token // Agrega el token JWT como encabezado de autorización
+                },
+                success: function (data) {
+                    // Verifica si se ha obtenido la información del usuario correctamente
+                    if (data) {
+                        // Actualiza los elementos HTML con la información del usuario
+                        $("#user-nombre").text("Nombre: " + data.nombre);
+                        $("#user-apellidos").text("Apellidos: " + data.apellidos);
+
+                        // Actualiza la imagen de perfil actual después de la actualización
+                        displayCurrentProfilePicture(data.foto);
+                    }
+                },
+                error: function (error) {
+                    console.error("Error al obtener la información del usuario:", error);
+                }
+            });
+        }
+
+        // Función para mostrar la imagen de perfil actual
+        function displayCurrentProfilePicture(imagePath) {
+            if (imagePath) {
+                $("#current-picture").attr("src", "/get_profile_picture/" + imagePath);
+            }
+        }
+
+        // Llama a las funciones necesarias al cargar la página
+        $(document).ready(function () {
+            loadUserImages();
+            displayUserInfo();
+
+            // Captura el envío del formulario para actualizar la imagen de perfil
+            $("#profile-picture-form").submit(function (event) {
+                event.preventDefault(); // Evita que se envíe el formulario de manera tradicional
+
+                var formData = new FormData(this); // Crea un objeto FormData para enviar el archivo
+
+                // Obtener el token JWT almacenado en las cookies
+                var token = Cookies.get('jwt_token'); // Asegúrate de que el nombre de la cookie coincida con tu configuración
+
+                // Verifica si se ha almacenado un token JWT en las cookies
+                if (token) {
+                    // Agrega el token JWT como encabezado de autorización en la solicitud AJAX
+                    $.ajax({
+                        type: "POST",
+                        url: "/add_photo_user", // Ruta para actualizar la imagen de perfil
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            Authorization: "Bearer " + token // Agrega el token JWT como encabezado de autorización
+                        },
+                        success: function (response) {
+                            console.log("Imagen de perfil actualizada:", response);
+
+                            $("#error-message").text("Imagen de perfil actualizada:");
+                            // Aquí puedes realizar acciones adicionales después de actualizar la imagen
+                        },
+                        error: function (error) {
+                            console.error("Error al actualizar la imagen de perfil:", error);
+
+                            $("#error-message").text("Error al actualizar la imagen de perfil.");
+                        }
+                    });
+                } else {
+                    console.error("No se encontró un token JWT en las cookies.");
+                    // Aquí puedes manejar la situación en la que no se encuentra un token JWT
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

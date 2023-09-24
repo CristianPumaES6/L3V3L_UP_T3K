@@ -139,6 +139,16 @@
                             Actualizar Foto
                         </button>
                     </div>
+                    <div class="center mb-2">
+                        <button type="submit" id="img-procesadas" class="a btn-procesadas">
+                            <!-- Usa la clase btn-register -->
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            MIS FOTOS PROCESADAS
+                        </button>
+                    </div>
                 </form>
 
 
@@ -215,6 +225,11 @@
                 var fileName = $(this).val().split("\\").pop();
                 $("#file-label").text(fileName);
             });
+
+            $("#img-procesadas").click(function (e) {
+                window.location.href = "/userImages";
+            });
+            
         });
 
         // Captura el envío del formulario para actualizar la imagen de perfil

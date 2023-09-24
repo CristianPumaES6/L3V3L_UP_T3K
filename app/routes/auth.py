@@ -45,7 +45,7 @@ def formRegister():
 # Servicio post register
 @auth_bp.route('/register',  methods=['POST'])
 def register():
-
+    access_token = ""
     if request.method == 'POST':
         # Obtiene los datos del formulario de registro
         data = request.get_json()
@@ -65,8 +65,10 @@ def register():
         db.session.add(nuevo_usuario)
         db.session.commit()
  
-    return jsonify({'message': 'Nuevo usuario registrado.'}), 200
+        # Genera un token JWT para el usuario
+        access_token = create_access_token(identity=nuevo_usuario.id, expires_delta=timedelta(days=365))
 
+    return jsonify({'message': 'Nuevo usuario registrado.','access_token': access_token}), 200
 
 # Vista del formulario Login
 @auth_bp.route('/login',  methods=['GET'])
