@@ -31,6 +31,10 @@ migrate = Migrate(app, db)
 from app.routes import auth_bp, images_bp  # Asegúrate de importarlos
 
 
+#app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+#photos = UploadSet('photos', ('png', 'jpg', 'jpeg', 'gif'))
+#configure_uploads(app, photos)
+
 # Registra los Blueprints
 app.register_blueprint(auth_bp)
 # app.register_blueprint(images_bp)

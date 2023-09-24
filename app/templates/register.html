@@ -34,8 +34,8 @@
         <input type="password" id="password" name="password" required>
         <br>
 
-        <label for="foto">Foto:</label>
-        <input type="file" id="foto" name="foto">
+        <label for="foto">Foto de perfil:</label>
+        <input type="file" name="foto" accept=".jpg, .jpeg, .png, .gif">
         <br>
         <button type="button" id="register-button">Registrarse</button>
     </form>
@@ -53,8 +53,8 @@
                 var dni = $("#dni").val();
                 var nick = $("#nick").val();
                 var password = $("#password").val();
-                // Para la foto, puedes obtener el archivo seleccionado si es necesario
-
+                var foto = $("#foto")[0].files[0]; // Obtiene el archivo de imagen seleccionado
+        
                 // Hashear la contraseña utilizando crypto.subtle
                 window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))
                     .then(function (hashBuffer) {
@@ -69,6 +69,7 @@
                             dni: dni,
                             nick: nick,
                             password: hashHex,
+                            foto:foto
                             // Agrega otros campos aquí según sea necesario
                         };
 

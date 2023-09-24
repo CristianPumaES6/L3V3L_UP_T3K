@@ -1,12 +1,12 @@
 from flask import request, jsonify, Blueprint
-from app import db
+from app import  db,app
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text  # Importa la función text de SQLAlchemy
 from flask import render_template
 from app.models.user import User  # Importa la clase User del modelo
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import check_password_hash
-
+import os
 
 # Crea un Blueprint para las rutas de autenticación
 auth_bp = Blueprint('auth', __name__)
@@ -47,17 +47,36 @@ def register():
 
     if request.method == 'POST':
         # Obtiene los datos del formulario de registro
-        data = request.get_json()
-        nombre = data.get('nombre')
-        apellidos = data.get('apellidos')
-        dni = data.get('dni')
-        nick = data.get('nick')
-        password = data.get('password')
+        data = request.form.to_dict()
+        foto = request.files.get('foto')  # Obtiene el archivo de imagen cargado
+
+        nombre = data['nombre']
+        apellidos = data['apellidos']
+        dni = data['dni']
+        nick = data['nick']
+        password = data['password']
 
         # Verifica si el usuario ya existe en la base de datos
         existing_user = User.query.filter_by(dni=dni).first()
         if existing_user:
             return jsonify({'message': 'El usuario ya existe'}), 400
+
+        # Si se proporciona una imagen, guárdala en el servidor
+        if foto:
+            # Verifica si la extensión del archivo es válida (por ejemplo, solo permite imágenes JPEG)
+            if not allowed_file_extension(foto.filename):
+                return jsonify({'message': 'Tipo de archivo no permitido para la imagen'}), 400
+
+            # Genera un nombre único para la imagen de perfil (puedes usar bibliotecas como uuid)
+            unique_filename = generate_unique_filename(foto.filename)
+
+            # Guarda la imagen en un directorio de imágenes de perfil (ajusta la ubicación según tu configuración)
+            foto.save(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], unique_filename))
+
+            # Guarda el nombre del archivo en la base de datos para este usuario
+            data['foto'] = unique_filename
+
+
 
         # Crea un nuevo usuario y guárdalo en la base de datos
         nuevo_usuario = User(nombre=nombre, apellidos=apellidos, dni=dni, nick=nick, password=password)
@@ -65,12 +84,58 @@ def register():
         db.session.commit()
  
     return jsonify({'message': 'Nuevo usuario registrado.'}), 200
+#@auth_bp.route('/register', methods=['POST'])
+#def register():
+#    if request.method == 'POST':
+#        # Obtén los datos del formulario de registro
+#        data = request.form.to_dict()
+#        foto = request.files.get('foto')  # Obtiene el archivo de imagen cargado
+#
+#        # Verifica si el usuario ya existe en la base de datos
+#        existing_user = User.query.filter_by(dni=data['dni']).first()
+#        if existing_user:
+#            return jsonify({'message': 'El usuario ya existe'}), 400
+#
+#        # Si se proporciona una imagen, guárdala en el servidor
+#        if foto:
+#            # Verifica si la extensión del archivo es válida (por ejemplo, solo permite imágenes JPEG)
+#            if not allowed_file_extension(foto.filename):
+#                return jsonify({'message': 'Tipo de archivo no permitido para la imagen'}), 400
+#
+#            # Genera un nombre único para la imagen de perfil (puedes usar bibliotecas como uuid)
+#            unique_filename = generate_unique_filename(foto.filename)
+#
+#            # Guarda la imagen en un directorio de imágenes de perfil (ajusta la ubicación según tu configuración)
+#            foto.save(os.path.join(app.config['PROFILE_PICTURES_FOLDER'], unique_filename))
+#
+#            # Guarda el nombre del archivo en la base de datos para este usuario
+#            data['foto'] = unique_filename
+#
+#        # Crea un nuevo usuario y guárdalo en la base de datos
+#        nuevo_usuario = User(**data)
+#        db.session.add(nuevo_usuario)
+#        db.session.commit()
+#
+#    return jsonify({'message': 'Nuevo usuario registrado.'}), 200
 
-
+# # Función para verificar la extensión de archivo permitida
+# def allowed_file_extension(filename):
+#     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png', 'gif'}
+# 
+# # Función para generar un nombre de archivo único (puedes ajustar esto según tus necesidades)
+# def generate_unique_filename(filename):
+#     import uuid
+#     unique_filename = str(uuid.uuid4()) + '.' + filename.rsplit('.', 1)[1].lower()
+#     return unique_filename
+# 
 # Vista del formulario Login
 @auth_bp.route('/login',  methods=['GET'])
 def formLogin():
     return render_template('login.html')
+
+
+
+
 
 
 # Servicio post login, si la contrasena es correcta retorna un token que debe guardarse en las cookies
@@ -101,3 +166,15 @@ def login():
     access_token = create_access_token(identity=user.id)
 
     return jsonify({'access_token': access_token}), 200
+
+
+
+# Función para verificar la extensión de archivo permitida
+def allowed_file_extension(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png', 'gif'}
+
+# Función para generar un nombre de archivo único (puedes ajustar esto según tus necesidades)
+def generate_unique_filename(filename):
+    import uuid
+    unique_filename = str(uuid.uuid4()) + '.' + filename.rsplit('.', 1)[1].lower()
+    return unique_filename
