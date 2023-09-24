@@ -24,13 +24,10 @@ load_dotenv()
 migrate = Migrate(app, db)
 
 
-# Configuración de la aplicación (opcional)
-# app.config['SECRET_KEY'] = 'tu_clave_secreta'
-
 # Importa las rutas y Blueprints de la aplicación
 from app.routes import auth_bp, images_bp  # Asegúrate de importarlos
 
 
 # Registra los Blueprints
 app.register_blueprint(auth_bp)
-# app.register_blueprint(images_bp)
+app.register_blueprint(images_bp)

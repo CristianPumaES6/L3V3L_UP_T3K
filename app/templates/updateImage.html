@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualiza tu foto de perfil!  😀</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap.min.css') }}">
+    <!-- Agregamos jQuery -->
+    <script src="{{ url_for('static', filename='lib/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/js.cookie.min.js') }}"></script>
+    <!-- Agregar hojas de estilo personalizadas -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/styles.css') }}">
+    <style>
+        /* Estilos personalizados para el input tipo archivo */
+        .custom-file-input {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            cursor: pointer;
+        }
+
+        .custom-file-label {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background-color: #3498db;
+            /* Color de fondo */
+            color: #fff;
+            /* Color del texto */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Estilos para la tarjeta de usuario tipo carné universitario */
+        .user-card {
+            background-color: #333;
+            /* Fondo oscuro */
+            color: #fff;
+            /* Texto blanco */
+            border: 2px solid #3498db;
+            width: 80%;
+            /* Ancho de la tarjeta */
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            /* Mostrar la imagen y la información en línea */
+            flex-direction: column; /* Alinear contenido en columna */
+            align-items: center;
+            /* Centrar verticalmente */
+        }
+
+        .user-image {
+            text-align: center;
+            /* Centrar la imagen */
+        }
+
+        .user-image img {
+            width: 80%;
+            max-width: 250px;
+            height: auto;
+            border: 2px solid #3498db;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+            /* Centrar horizontalmente */
+        }
+
+        .user-info {
+            width: 100%; /* Ancho completo */
+            padding: 20px; /* Espacio alrededor de la información */
+        }
+
+        .user-info h2 {
+            font-weight: bold;
+            /* Títulos en negritas */
+            margin-bottom: 10px;
+            /* Espacio inferior entre títulos y párrafos */
+        }
+
+        .user-info p {
+            margin: 10px 0;
+        }
+
+        /* Estilo para la línea divisoria */
+        .divider {
+            border-top: 2px solid #3498db;
+            /* Línea superior sólida */
+            margin-top: 20px;
+            /* Espacio superior entre la imagen y la línea */
+            padding-top: 20px;
+            /* Espacio superior entre la línea y la información */
+        }
+
+        /* Estilos para dispositivos móviles */
+        @media (max-width: 768px) {
+            .user-card {
+                width: 90%; /* Ancho del 90% para pantallas más pequeñas */
+            }
+
+            .user-image {
+                flex: 0 0 50%; /* Ancho de la columna de la imagen */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-box" style="width: 90%">
+        <br><br><br>
+        <h2>Actualiza tu foto de perfil!  😀 </h2>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <br><br><br><br><br><br>
+                <form id="profile-picture-form" enctype="multipart/form-data">
+                    <div class="user-box" style="height: 200px;">
+                        <!-- Input de tipo archivo personalizado -->
+                        <label class="custom-file-label" for="foto" id="file-label">Click para subir Imagen</label>
+                        <input type="file" id="foto" name="foto" accept=".jpg, .jpeg, .png, .gif"
+                            class="custom-file-input" required>
+                    </div>
+                    <div class="center mb-2">
+                        <button type="submit" id="update-button" class="a btn-register">
+                            <!-- Usa la clase btn-register -->
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            Actualizar Foto
+                        </button>
+                    </div>
+                </form>
+
+
+            <div id="error-message" class="color-yellow"></div>
+            </div>
+            <div class="col-12 col-md-6">
+                <!-- Elemento para mostrar la imagen de perfil actual -->
+                <div id="current-profile-picture" class="user-card">
+                    <div class="user-image">
+                        <img src="" alt="Imagen de perfil actual" id="current-picture">
+                    </div>
+                    <div class="user-info">
+                        <h2>Información de Usuario</h2>
+                        <p id="user-id"></p>
+                        <div class="divider"></div>
+                        <p id="user-nombre"></p>
+                        <div class="divider"></div>
+                        <p id="user-apellidos"></p>
+                        <div class="divider"></div>
+                        <p id="user-dni"></p>
+                        <div class="divider"></div>
+                        <p id="user-nick"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Función para mostrar la información del usuario al cargar la página
+        function displayUserInfo() {
+            // Obtener el token JWT almacenado en las cookies
+            var token = Cookies.get('jwt_token'); // Asegúrate de que el nombre de la cookie coincida con tu configuración
+            $.ajax({
+                type: "GET",
+                url: "/user_info", // Ruta para obtener la información del usuario
+                processData: false,
+                contentType: false,
+                headers: {
+                    Authorization: "Bearer " + token // Agrega el token JWT como encabezado de autorización
+                },
+                success: function (data) {
+                    // Verifica si se ha obtenido la información del usuario correctamente
+                    if (data) {
+                        // Actualiza los elementos HTML con la información del usuario
+                        $("#user-id").text("ID de Usuario: " + data.id);
+                        $("#user-nombre").text("Nombre: " + data.nombre);
+                        $("#user-apellidos").text("Apellidos: " + data.apellidos);
+                        $("#user-dni").text("DNI: " + data.dni);
+                        $("#user-nick").text("NICK: " + data.nick);
+                        
+                        // Actualiza la imagen de perfil actual después de la actualización
+                        displayCurrentProfilePicture(data.foto);
+                    }
+                },
+                error: function (error) {
+                    console.error("Error al obtener la información del usuario:", error);
+                }
+            });
+        }
+
+        // Función para mostrar la imagen de perfil actual
+        function displayCurrentProfilePicture(nameImage) {
+            $("#current-picture").attr("src", "/get_profile_picture/" + nameImage);
+        }
+
+        // Mostrar la imagen de perfil actual y el nombre del archivo seleccionado al cargar la página
+        $(document).ready(function () {
+            displayUserInfo();
+
+            // Actualizar el nombre del archivo seleccionado en el input de tipo archivo
+            $("#foto").on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                $("#file-label").text(fileName);
+            });
+        });
+
+        // Captura el envío del formulario para actualizar la imagen de perfil
+        $("#profile-picture-form").submit(function (event) {
+            event.preventDefault(); // Evita que se envíe el formulario de manera tradicional
+
+            var formData = new FormData(this); // Crea un objeto FormData para enviar el archivo
+
+            // Obtener el token JWT almacenado en las cookies
+            var token = Cookies.get('jwt_token'); // Asegúrate de que el nombre de la cookie coincida con tu configuración
+
+            // Verifica si se ha almacenado un token JWT en las cookies
+            if (token) {
+                // Agrega el token JWT como encabezado de autorización en la solicitud AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "/update_profile_picture", // Ruta para actualizar la imagen de perfil
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        Authorization: "Bearer " + token // Agrega el token JWT como encabezado de autorización
+                    },
+                    success: function (response) {
+                        console.log("Imagen de perfil actualizada:", response);
+
+                        $("#error-message").text("Imagen de perfil actualizada:");
+                        displayUserInfo()
+                    },
+                    error: function (error) {
+                        console.error("Error al actualizar la imagen de perfil:", error);
+                    }
+                });
+            } else {
+                console.error("No se encontró un token JWT en las cookies.");
+                // Aquí puedes manejar la situación en la que no se encuentra un token JWT
+            }
+        });
+    </script>
+
+</body>
+
+</html>

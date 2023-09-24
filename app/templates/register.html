@@ -5,55 +5,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Usuario</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap.min.css') }}">
     <!-- Agregamos jQuery -->
     <script src="{{ url_for('static', filename='lib/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/js.cookie.min.js') }}"></script>
+    <!-- Agregar hojas de estilo personalizadas -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/styles.css') }}">
 </head>
 
 <body>
-    <h1>Registro de Usuario</h1>
-
-
-    <form id="registration-form">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required>
-        <br>
-
-        <label for="apellidos">Apellidos:</label>
-        <input type="text" id="apellidos" name="apellidos" required>
-        <br>
-
-        <label for="dni">DNI único:</label>
-        <input type="text" id="dni" name="dni" required>
-        <br>
-
-        <label for="nick">NICK único:</label>
-        <input type="text" id="nick" name="nick" required>
-        <br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-
-        <label for="foto">Foto:</label>
-        <input type="file" id="foto" name="foto">
-        <br>
-        <button type="button" id="register-button">Registrarse</button>
-    </form>
-
-
-
+    <div class="login-box">
+        <h2>Registro de Usuario</h2>
+        <form id="registration-form" enctype="multipart/form-data">
+            <div class="user-box">
+                <input type="text" id="nombre" name="nombre" required>
+                <label>Nombre (Campo requerido)</label>
+            </div>
+            <div class="user-box">
+                <input type="text" id="apellidos" name="apellidos" required>
+                <label>Apellidos</label>
+            </div>
+            <div class="user-box">
+                <input type="text" id="dni" name="dni" required>
+                <label>DNI o Documento (Campo requerido)</label>
+            </div>
+            <div class="user-box">
+                <input type="text" id="nick" name="nick" required>
+                <label>Nick (Campo requerido)</label>
+            </div>
+            <div class="user-box">
+                <input type="password" id="password" name="password" required>
+                <label>Contraseña (mínimo 8 caracteres)</label>
+            </div>
+            <div id="error-message" class="color-yellow"></div>
+            <div class="center mb-2 color-yellow">
+                <button type="button" id="register-button" class="a btn-register">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Registrarse
+                </button>
+            </div>
+        </form>
+        <div id="response" class="mt-3 text-center color-yellow"></div>
+        <div class="center mt-2">
+            <p class="color-white">¿Ya tienes una cuenta? <a href="#" id="login-link">Iniciar sesión</a></p>
+        </div>
+    </div>
 
     <script>
         $(document).ready(function () {
             // Captura el evento de clic en el botón de registro
             $("#register-button").click(function () {
-                // Obtén los valores de los campos del formulario
+                // Obtiene los valores de los campos del formulario
                 var nombre = $("#nombre").val();
                 var apellidos = $("#apellidos").val();
                 var dni = $("#dni").val();
                 var nick = $("#nick").val();
                 var password = $("#password").val();
-                // Para la foto, puedes obtener el archivo seleccionado si es necesario
+                // Realiza las validaciones
+                if (dni.length < 8) {
+                    $("#error-message").text("El numero de documento debe tener al menos 8 caracteres.");
+                    return; // Detiene el proceso si la validación falla
+                }
+                // Realiza las validaciones
+                if (password.length < 6) {
+                    $("#error-message").text("La contraseña debe tener al menos 6 caracteres.");
+                    return; // Detiene el proceso si la validación falla
+                }
+
+                // Verifica si los campos obligatorios están vacíos
+                if (!nombre || !nick || !password) {
+                    $("#error-message").text("Todos los campos obligatorios deben completarse.");
+                    return; // Detiene el proceso si la validación falla
+                }
 
                 // Hashear la contraseña utilizando crypto.subtle
                 window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))
@@ -61,14 +87,13 @@
                         // Convertir el resultado del hash a una cadena hexadecimal
                         var hashArray = Array.from(new Uint8Array(hashBuffer));
                         var hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
-
                         // Crea un objeto de datos en formato JSON con la contraseña hasheada
                         var userData = {
                             nombre: nombre,
                             apellidos: apellidos,
                             dni: dni,
                             nick: nick,
-                            password: hashHex,
+                            password: hashHex
                             // Agrega otros campos aquí según sea necesario
                         };
 
@@ -84,10 +109,17 @@
                                 // Supongamos que has recibido el token en la respuesta del servidor y lo guardas en una variable llamada 'token'
                                 var token = response.access_token; // Asegúrate de obtener el token de la respuesta
 
-                                // Establece la cookie con el nombre 'jwt_token' y el valor del token
-                                Cookies.set('jwt_token', token, { expires: 7 }); // Aquí, 'expires' establece la duración de la cookie en días (ajusta según tus necesidades)
+                                // Establece la cookie utilizando jQuery
+                                Cookies.set('jwt_token', token, { expires: 7 });
+
+                                $("#error-message").text(response.message);
+                                if(response.message== "Nuevo usuario registrado.")
+                                    // Redirige al usuario a la página de inicio de sesión
+                                    window.location.href = "/register"; // Reemplaza "/login" con la URL real de tu página de inicio de sesión
                             },
                             error: function (error) {
+
+                                $("#error-message").text(error.message);
                                 // Maneja el error
                                 console.error("Error en el registro:", error);
                                 // Puedes mostrar un mensaje de error o manejarlo de otra manera
@@ -97,6 +129,14 @@
                     .catch(function (err) {
                         console.error(err);
                     });
+            });
+
+            // Agrega el evento de clic al enlace "Iniciar sesión"
+            $("#login-link").click(function (e) {
+                e.preventDefault(); // Previene la acción predeterminada del enlace (navegar a una URL)
+
+                // Redirige al usuario a la página de inicio de sesión
+                window.location.href = "/login"; // Reemplaza "/login" con la URL real de tu página de inicio de sesión
             });
         });
     </script>
