@@ -57,3 +57,7 @@ Werkzeug==2.3.7
 //si borramos lel directorio venv
 python -m venv venv
 
+python3 run.py
+
+
+uso de decoradores
