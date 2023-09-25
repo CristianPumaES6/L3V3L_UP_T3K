@@ -219,6 +219,51 @@
             cursor: pointer;
 
         }
+
+        /* Estilos para el contenedor de respuesta */
+        #response-container {
+            text-align: center;
+            /* Centra el contenido horizontalmente */
+            margin-top: 20px;
+            /* Añade un margen superior para separar del contenido anterior */
+        }
+
+        /* Estilos para el textarea de respuesta */
+        #response-text {
+            width: 100%;
+            /* Hace que el textarea tenga el mismo ancho que el contenedor */
+            border: 2px solid #3498db;
+            /* Aplica un borde similar al de #current-profile-picture */
+            border-radius: 10px;
+            /* Agrega esquinas redondeadas */
+            padding: 10px;
+            /* Añade un relleno para mejorar el aspecto */
+            background-color: #243b55;
+            /* Cambia el fondo a #243b55 */
+            color: #fff;
+            /* Cambia el color de la letra a blanco para contraste */
+        }
+
+        /* Estilos para el botón de copiar */
+        #copy-button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 0;
+            /* Quita el borde redondeado */
+            padding: 10px;
+            /* Añade un relleno similar al del textarea */
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 0px;
+            width: 100%;
+            /* Hace que el botón tenga el mismo ancho que el textarea */
+        }
+
+        /* Estilos para el botón de copiar al pasar el mouse sobre él */
+        #copy-button:hover {
+            background-color: #2775b6;
+        }
     </style>
 </head>
 
@@ -257,12 +302,20 @@
                 <!-- Formulario para actualizar la foto de perfil -->
                 <form id="profile-picture-form" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="foto" class="font-weight-bold">Subir nueva foto de perfil:</label>
+                        <label for="foto" class="font-weight-bold">Procesa una Image a texto:</label>
                         <input type="file" class="form-control" name="foto" accept="image/*" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Actualizar Foto de Perfil</button>
+                    <button type="submit" class="btn btn-primary">Procesar</button>
                 </form>
             </div>
+        </div>
+
+        <div class="row">
+            <div id="response-container" style="display: none;">
+                <textarea id="response-text" rows="6"></textarea>
+                <button id="copy-button">Copiar</button>
+            </div>
+
         </div>
 
         <div class="row">
@@ -274,6 +327,7 @@
             <p id="error-message" class="text-danger mt-2"></p>
 
             <h2 class="tilte-white">Imágenes del Usuario</h2>
+
             <div id="image-gallery" class="row">
                 <!-- Aquí se cargarán las tarjetas de imágenes -->
             </div>
@@ -358,7 +412,63 @@
 
         // Función para manejar el clic en una tarjeta de imagen
         function handleImageCardClick(imageName) {
-            alert("Nombre de la imagen: " + imageName);
+
+            // Obtener el token JWT almacenado en las cookies
+            var token = Cookies.get('jwt_token'); // Asegúrate de que el nombre de la cookie coincida con tu configuración
+            // Dividir la imageName en partes usando "/" como separador
+            var partes = imageName.split("/");
+            debugger
+            var filename = "";
+            if( partes.length == 1 ) {
+                filename = partes[0];
+            } else {
+            // Seleccionar la parte que está después del segundo "/"
+                filename = partes[2];
+            }
+           
+
+
+            $.ajax({
+                type: "POST",
+                url: "/processImage",
+                data: JSON.stringify({ "filename": filename }),
+                contentType: "application/json",
+                headers: {
+                    Authorization: "Bearer " + token // Agrega el token JWT como encabezado de autorización
+                },
+                success: function (response) {
+                    if (response.text) {
+                        // Muestra el contenedor y el texto
+                        $("#response-container").show();
+                        $("#response-text").val(response.text);
+
+                        // Agrega un controlador de eventos al botón de copiar
+                        $("#copy-button").click(function () {
+                            // Selecciona el texto en el textarea
+                            $("#response-text").select();
+
+                            // Copia el texto al portapapeles
+                            document.execCommand('copy');
+
+                            // Cambia el texto del botón temporalmente para indicar que se copió
+                            $(this).text('Copiado');
+
+                            // Vuelve a cambiar el texto del botón después de 1 segundo
+                            setTimeout(function () {
+                                $("#copy-button").text('Copiar');
+                            }, 1000);
+                        });
+                    } else {
+                        $("#error-message").text(response.message);
+                        alert(response.message);
+                    }
+                },
+                error: function (e) {
+                    $("#error-message").text("Usuario Inválido.");
+                    console.log(e);
+                }
+            });
+
         }
         // Llama a las funciones necesarias al cargar la página
         $(document).ready(function () {
@@ -388,9 +498,10 @@
                         },
                         success: function (response) {
                             console.log("Se agrego una nueva imagen", response);
-
+debugger
                             $("#error-message").text("Se agrego una nueva imagen.");
                             // Aquí puedes realizar acciones adicionales después de actualizar la imagen
+                            handleImageCardClick(response.nameImage)
                         },
                         error: function (error) {
                             console.error("Error al actualizar la imagen de perfil:", error);
