@@ -13,6 +13,9 @@ COPY run_migration.sh .
 # Damos permisos de ejecución al script
 RUN chmod +x run_migration.sh
 
+# Instala Tesseract OCR
+RUN apt-get update && apt-get install -y tesseract-ocr
+
 # Instalamos las dependencias
 RUN pip install -r requirements.txt
 

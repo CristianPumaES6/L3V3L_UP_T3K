@@ -47,9 +47,18 @@ Antes de continuar, asegúrate de tener instalados los siguientes requisitos en 
 5. Una vez que los contenedores estén en funcionamiento, podrás acceder a la aplicación Flask y validar la conexion con la siguiente URL:
     ```bash
         http://localhost:5000/test_db_connection
+
+
+        # SI LA CONEXION ESTA OK, Significa que se mapeo correctamente las talbas users,images en la BD root
+        
+        
+        # Podemos saltarnos al paso numero 10
+        http://localhost:5000/register
     ```
 
-6. Ahora, debemos acceder a la interfaz de administración de PostgreSQL a través del navegador:
+
+
+6. Abrimos la interfaz de administración de PostgreSQL a través del navegador:
     ```bash
          http://localhost/
     ```
@@ -100,8 +109,6 @@ Antes de continuar, asegúrate de tener instalados los siguientes requisitos en 
         # Nos dirigimos al pgadmin y revisamos dentro de Schemas/public/tabla/  Si se crearon las tablas users y Images 
 
          http://localhost/
-        
-        # Si se cargaron podemos continuar con el paso numero 10
     ```
 
     ```bash
@@ -115,16 +122,13 @@ Antes de continuar, asegúrate de tener instalados los siguientes requisitos en 
         flask db migrate
 
         flask db upgrade
-
-
     ```
 
-10. Verificamos que las tablas users y images, que se hallan creado correctamente
     ```bash
          http://localhost/
     ```
 
-11. Empezamos registrando un nuevo usuario para luego iniciar session :
+10. Empezamos registrando un nuevo usuario para luego iniciar session :
     ```bash
         http://localhost:5000/register
     ```
