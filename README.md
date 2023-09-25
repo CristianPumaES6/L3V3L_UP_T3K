@@ -134,6 +134,31 @@ Antes de continuar, asegúrate de tener instalados los siguientes requisitos en 
     ```
 
 
+# PRUEBAS UNITARIAS 📝
+
+Este proyecto incluye pruebas unitarias para garantizar el correcto funcionamiento de las funcionalidades. A continuación, se proporcionan instrucciones sobre cómo ejecutar estas pruebas.
+
+1. Asegúrate de que tengas Python y las dependencias requeridas instaladas en tu entorno.
+
+2. Configura tu entorno virtual (si se utiliza) e instala las dependencias del proyecto:
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # En Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+    ```
+3. Ejecuta las pruebas unitarias utilizando el siguiente comando:
+
+   ```bash
+    python -m unittest tests.test_auth
+    ```
+
+
+
+### Ejecución de las Pruebas
+
+Para ejecutar las pruebas unitarias, sigue estos pasos:
+
 # Flujo de Pantallas  🖥️
 
 
