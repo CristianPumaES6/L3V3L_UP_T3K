@@ -84,3 +84,22 @@ pip freeze > requirements.txt
 CREAR UN AIMAGEN DOCKER
 docker build -t nombre_de_la_imagen .
 docker-compose up
+
+
+Crear un imagen docker en ++6+5
+
+
+docker buildx build -t nombre_de_tu_imagen3 .
+
+docker buildx run -d -p 5000:5000 nombre_de_tu_imagen3
+docker run -d -p 5000:5000 nombre_de_tu_imagen3
+
+docker ps -a
+
+
+docker logs 1b10be6ef351
+
+
+docker rm 1b10be6ef351
+
+H3lmut2023.EE
