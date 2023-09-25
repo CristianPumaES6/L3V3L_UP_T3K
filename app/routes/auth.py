@@ -32,9 +32,9 @@ def test_db_connection():
         # Ejecuta la consulta
         db.session.execute(query)
 
-        return 'Conexión a la base de datos exitosa'
+        return 'Conexión a la base de datos exitosa <a href="../../">Ir a la página de inicio</a>'
     except SQLAlchemyError as e:
-        return 'Error de conexión a la base de datos: ' + str(e), 500
+        return 'Error de conexión a la base de datos: [ REVISAR NOMBRE DE LA BASE DATOS ] ' + str(e), 500
 
 
 # Vista Register y VIsta updateImage

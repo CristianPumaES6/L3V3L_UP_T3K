@@ -1,9 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Mi Aplicación Flask</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procesamiento de Imágenes</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        /* Encabezado */
+        header {
+            background-image: url('https://previews.123rf.com/images/vectorfusionart/vectorfusionart2202/vectorfusionart220202188/182605595-imagen-de-procesamiento-de-datos-sobre-fondo-azul-concepto-de-interfaces-digitales-y-concepto-de.jpg');
+            background-size: cover;
+            color: #fff;
+            padding: 100px 0;
+        }
+        header h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        header p {
+            font-size: 18px;
+        }
+        /* Sección de Características */
+        .features {
+            background-color: #fff;
+            padding: 40px 0;
+        }
+        .feature-box {
+            display: inline-block;
+            width: 30%;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .feature-box img {
+            max-width: 100%;
+        }
+        .feature-box h2 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        .feature-box p {
+            font-size: 16px;
+        }
+        /* Llamado a la Acción (CTA) */
+        .cta-button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 15px 30px;
+            font-size: 18px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .cta-button:hover {
+            background-color: #0056b3;
+        }
+        /* Pie de Página */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+        }
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ mensaje }}</h1>
+    <header>
+        <div class="container">
+            <h1>Procesamiento de Imágenes a texto</h1>
+            <p>Transforma imágenes a texto.</p>
+            <div class="container">
+                <a class="cta-button"  href="../../register">¡Pruébalo Ahora!</a>
+            </div>
+        </div>
+    </header>
+    <div class="container features">
+        <div class="feature-box">
+            <img src="https://imgv3.fotor.com/images/side/convertir-imagen-de-baja-resolucion-a-alta-resolucion.png" alt="Ejemplo de procesamiento de imagen 1">
+            <h2>Mejora de Calidad</h2>
+            <p>Obtén imágenes nítidas y de alta calidad.</p>
+        </div>
+        <div class="feature-box">
+            <img src="https://la.mathworks.com/solutions/image-video-processing/object-recognition/_jcr_content/mainParsys/band_copy_1227855798/mainParsys/columns_1606542234/2/image_copy_copy.adapt.full.medium.svg/1673255358761.svg" alt="Ejemplo de procesamiento de imagen 2">
+            <h2>Reconocimiento de Objetos</h2>
+            <p>Identifica objetos y patrones en imágenes.</p>
+        </div>
+        <div class="feature-box">
+            <img src="https://larepublica.cronosmedia.glr.pe/original/2023/06/17/648dca2871c74f7e9d2cb744.jpg" alt="Ejemplo de procesamiento de imagen 3">
+            <h2>Procesamiento Rápido</h2>
+            <p>Resultados precisos en tiempo récord.</p>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Procesamiento de Imágenes. Todos los derechos reservados.</p>
+            <a href="#">Política de Privacidad</a>
+            <a href="#">Términos de Servicio</a>
+        </div>
+    </footer>
 </body>
-</html> 
+</html>
