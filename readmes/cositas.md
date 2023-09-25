@@ -42,9 +42,13 @@ Esto creará la tabla "users" en tu base de datos de acuerdo con la definición 
 PRoblemas con con version migrate
 2.There seems to be issues with latest Flask-Migrate. So use this command pip install --force-reinstall -v "Flask-Migrate==3.1.0"
 
-python -m venv venv
+python3 -m venv venv
 
 source venv/bin/activate
+
+pip install -r requirements.txt
+
+
 
 flask db init
 flask db migrate -m "Initial migration"
