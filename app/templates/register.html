@@ -81,14 +81,19 @@
                     return; // Detiene el proceso si la validación falla
                 }
 
-
+                // Hashear la contraseña utilizando crypto.subtle
+                window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))
+                    .then(function (hashBuffer) {
+                        // Convertir el resultado del hash a una cadena hexadecimal
+                        var hashArray = Array.from(new Uint8Array(hashBuffer));
+                        var hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
                         // Crea un objeto de datos en formato JSON con la contraseña hasheada
                         var userData = {
                             nombre: nombre,
                             apellidos: apellidos,
                             dni: dni,
                             nick: nick,
-                            password: password
+                            password: hashHex
                             // Agrega otros campos aquí según sea necesario
                         };
 
@@ -124,8 +129,8 @@
                     .catch(function (err) {
                         console.error(err);
                     });
+            });
 
-                    
             // Agrega el evento de clic al enlace "Iniciar sesión"
             $("#login-link").click(function (e) {
                 e.preventDefault(); // Previene la acción predeterminada del enlace (navegar a una URL)

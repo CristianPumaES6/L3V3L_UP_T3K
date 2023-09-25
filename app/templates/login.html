@@ -74,13 +74,18 @@
                     return; // Detiene el proceso si la validación falla
                 } 
 
-              
-                
+                // Hashear la contraseña utilizando crypto.subtle
+                window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))
+                    .then(function (hashBuffer) {
+                        // Convertir el resultado del hash a una cadena hexadecimal
+                        var hashArray = Array.from(new Uint8Array(hashBuffer));
+                        var hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+
                         // Enviar la contraseña hasheada al servidor
                         $.ajax({
                             type: "POST",
                             url: "/login",
-                            data: JSON.stringify({ "nick": nick, "password": password }),
+                            data: JSON.stringify({ "nick": nick, "password": hashHex }),
                             contentType: "application/json",
                             success: function (response) {
                                 // Manejar la respuesta del servidor aquí
@@ -110,7 +115,7 @@
                     .catch(function (err) {
                         console.error(err);
                     });
-                    
+            });
 
             $("#register-form").click(function (e) {
                 e.preventDefault(); // Previene la acción predeterminada del enlace (navegar a una URL)
