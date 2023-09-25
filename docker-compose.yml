@@ -1,33 +1,41 @@
-version : "3.8"
+version: "3.8"
 
-services :
+networks:
+  mynetwork:  # Define una red personalizada
+    driver: bridge  # Puedes utilizar el driver "bridge" o el que mejor se ajuste a tus necesidades
 
-    postgres:
-      image: postgres
-      restart: always
-      ports:
-        - "5432:5432"
-      environment:
-        - DATABASE_HOST=127.0.0.1
-        - POSTGRES_USER=root
-        - POSTGRES_PASSWORD=root
-        - POSTGRES_DB=root
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=root
+    networks:  # Conecta el servicio "postgres" a la red personalizada
+      - mynetwork
+    ports:
+      - "5432:5432"
 
-    pgadmin:
-      image: dpage/pgadmin4
-      environment:
-        PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
-        PGADMIN_DEFAULT_PASSWORD: "admin"
-      ports:
-        - "80:80"
-      depends_on:
-        - postgres
-    
-    app:
-      build:
-        context: .
-        dockerfile: Dockerfile
-      ports:
-        - "5000:5000"  # Puertos para exponer tu aplicación
-      depends_on:
-        - postgres
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "80:80"
+    depends_on:
+      - postgres
+    networks:  # Conecta el servicio "pgadmin" a la red personalizada
+      - mynetwork
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    networks:  # Conecta el servicio "app" a la red personalizada
+      - mynetwork
