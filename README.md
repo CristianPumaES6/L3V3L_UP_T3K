@@ -72,11 +72,20 @@ Antes de continuar, asegúrate de tener instalados los siguientes requisitos en 
     }
     ```
 
-8. Luego creamos nuestro nueva base datos con el nombre l3v3lupt3k
+8. Ahora la configuración por defecto de la base de datos está con 'root'. Podemos crear una nueva base de datos llamada 'l3v3lupt3k', esto es opcional. Si deseamos agregar otra base de datos, tendríamos que hacer lo siguiente:
 
     ```bash
       # name data base 
       l3v3lupt3k
+    ```
+
+    ```bash
+      # Modificamos la bd a ingresar
+      config.py/
+        class Config:
+            SECRET_KEY = os.getenv('SECRET_KEY', 'tu_clave_secreta_predeterminada')
+            # Database URI
+            SQLALCHEMY_DATABASE_URI = 'postgresql://root:root@postgres:5432/l3v3lupt3k'
     ```
    <img width="300" alt="image" src="https://github.com/CristianPumaES6/L3V3L_UP_T3K/assets/29841048/828277cd-5359-4dfb-9832-df17b6c340c3">
  
