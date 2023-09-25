@@ -61,3 +61,9 @@ python3 run.py
 
 
 uso de decoradores
+
+
+LO MAS COMPLICADO INSTALR tesseract is not installed or it's not in your PATH. See README file for more information
+
+lo instale dezsde brem 
+brew install tesseract
