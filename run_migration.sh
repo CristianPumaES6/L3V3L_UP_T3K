@@ -2,7 +2,7 @@
 
 # Ejecuta las migraciones
 flask db init
-flask db migrate -m "Initial migration"
+flask db migrate  
 flask db upgrade
 
   
