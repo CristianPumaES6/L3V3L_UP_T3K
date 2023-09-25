@@ -57,11 +57,13 @@ A continuación, se presenta el flujo de pantallas de nuestro proyecto "L3V3L_UP
    - **Rutas:** `/` y `/login`
    - Esta es la pantalla de inicio de la aplicación.
    - Proporciona información general sobre el proyecto y ofrece un formulario de inicio de sesión. También incluye una opción para redireccionar al formulario de registro.
+<img width="571" alt="image" src="https://github.com/CristianPumaES6/L3V3L_UP_T3K/assets/29841048/69b71a8e-2543-4691-8575-cf348c54714a">
 
 2. **Pantalla de Registro** 📝
    - **Ruta:** `/registro`
    - Los usuarios pueden registrarse desde esta pantalla.
    - Después del registro, son redirigidos automáticamente al formulario de inicio de sesión.
+<img width="691" alt="image" src="https://github.com/CristianPumaES6/L3V3L_UP_T3K/assets/29841048/61842a8a-69a1-4a5b-bbb6-98bbbf6e261b">
 
 3. **Actualizar Imagen de Perfil** 📷
    - **Ruta:** `/updateImage`
