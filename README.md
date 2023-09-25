@@ -52,7 +52,7 @@ Antes de continuar, asegúrate de tener instalados los siguientes requisitos en 
         # SI LA CONEXION ESTA OK, Significa que se mapeo correctamente las talbas users,images en la BD root
         
         
-        # Podemos saltarnos al paso numero 10
+        # Podemos saltarnos al paso numero 11
         http://localhost:5000/register
     ```
 
@@ -81,7 +81,7 @@ Antes de continuar, asegúrate de tener instalados los siguientes requisitos en 
     }
     ```
 
-8. Ahora la configuración por defecto de la base de datos está con 'root'. Podemos crear una nueva base de datos llamada 'l3v3lupt3k', esto es opcional. Si deseamos agregar otra base de datos, tendríamos que hacer lo siguiente:
+9. Ahora la configuración por defecto de la base de datos está con 'root'. Podemos crear una nueva base de datos llamada 'l3v3lupt3k', esto es opcional. Si deseamos agregar otra base de datos, tendríamos que hacer lo siguiente:
 
     ```bash
       # name data base 
@@ -99,7 +99,7 @@ Antes de continuar, asegúrate de tener instalados los siguientes requisitos en 
    <img width="300" alt="image" src="https://github.com/CristianPumaES6/L3V3L_UP_T3K/assets/29841048/828277cd-5359-4dfb-9832-df17b6c340c3">
  
 
-9. § Ahora tendremos que mapear las tablas a la nueva BD
+10. Ahora tendremos que mapear las tablas a la nueva BD
 
     ```bash
         # Detenemos docker y volvemos a ejecutar
@@ -128,7 +128,7 @@ Antes de continuar, asegúrate de tener instalados los siguientes requisitos en 
          http://localhost/
     ```
 
-10. Empezamos registrando un nuevo usuario para luego iniciar session :
+11. Empezamos registrando un nuevo usuario para luego iniciar session :
     ```bash
         http://localhost:5000/register
     ```
