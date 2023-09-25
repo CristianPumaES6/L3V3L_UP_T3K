@@ -4,11 +4,11 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import  db,app
 from flask import render_template
 from app.models.user import User  # Importa la clase User del modelo
-
 from app.models.image import Image  # Importa la clase User del modelo
 import os 
 import datetime as dt  # Cambia el nombre del módulo a 'dt' para evitar conflictos
-
+import pytesseract  # Importa la biblioteca pytesseract
+from PIL import Image as IMGPIL
 
 
 @images_bp.route('/upload', methods=['POST'])
@@ -16,13 +16,6 @@ def upload_image():
     # Lógica para cargar imágenes
     # ...
     return jsonify({'access_token': "access_token"}), 200
-
-@images_bp.route('/process', methods=['GET'])
-def process_image():
-    # Lógica para procesar imágenes utilizando OCR
-    # ...
-    return jsonify({'access_token': '/process'}), 200
-
 
 
 
@@ -186,3 +179,40 @@ def add_photo_user():
 
     except Exception as e:
         return jsonify({'message': 'Error al actualizar la imagen de perfil y la tabla Images', 'error': str(e)}), 500
+    
+
+
+
+@images_bp.route('/processImage', methods=['POST'])
+@jwt_required()  # Requiere autenticación mediante JWT
+def process_image():
+    try:
+        current_user_id = get_jwt_identity()  # Obtiene el ID del usuario a partir del token JWT
+
+        # Verifica si el usuario existe en la base de datos (puedes agregar tu lógica aquí)
+
+        data = request.get_json()  # Obtiene los datos JSON de la solicitud
+        image_location = data.get('filename')  # Obtiene la ubicación de la imagen desde los datos JSON
+
+        # Verifica si se proporcionó una ubicación de imagen válida
+        if image_location:
+            # Construye la ruta completa a la imagen
+            image_path = os.path.join(os.getcwd(), app.config['PROFILE_PICTURES_FOLDER'], image_location.lstrip('/'))
+            print("------------")
+            print(image_path)
+            print("------------")
+
+            # Verifica si el archivo de imagen existe
+            if os.path.isfile(image_path):
+                # Utiliza pytesseract para extraer el texto de la imagen
+                text = pytesseract.image_to_string(IMGPIL.open(image_path))
+
+                # Devuelve el texto extraído como respuesta JSON
+                return jsonify({'text': text}), 200
+            else:
+                return jsonify({'message': 'La ubicación de la imagen no es válida'}), 400
+        else:
+            return jsonify({'message': 'No se proporcionó ninguna ubicación de imagen válida'}), 400
+
+    except Exception as e:
+        return jsonify({'message': 'Error al procesar la imagen', 'error': str(e)}), 500
