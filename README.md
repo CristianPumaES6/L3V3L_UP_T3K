@@ -41,17 +41,47 @@ Antes de continuar, asegúrate de tener instalados los siguientes requisitos en 
     ```bash
         http://localhost:5000/
     ```
-6. Además, puedes acceder a la interfaz de administración de PostgreSQL a través de:
+6. Ahora, debemos acceder a la interfaz de administración de PostgreSQL a través del navegador:
     ```bash
+         http://localhost/
     ```
 7. Utiliza las credenciales predeterminadas para PostgreSQL
     ```bash
-    (usuario: root, contraseña: root) para acceder.
+    (usuario: admin@admin.com, contraseña: admin) para acceder.
     ```
-## Flujo de Pantallas  🖥️
+8. Luego crearemos una nueva conexion
+    ```bash
+    (Hostname: postgrest
+    port: 5432
+    maintenance: root
+    username: root
+    psw: root
+   )
+    ```
+
+8. Luego creamos nuestro nueva base datos
+
+    ```bash
+      l3v3lupt3k
+    ```
+   <img width="300" alt="image" src="https://github.com/CristianPumaES6/L3V3L_UP_T3K/assets/29841048/828277cd-5359-4dfb-9832-df17b6c340c3">
+ 
+9. volvemos a ejecutar docker
+    ```bash
+        docker-compose up
+    ```
+
+10. Verificamos que las talblas users y imagenes se hallan creado correctamente
+    ```bash
+         http://localhost/
+    ```
 
 
-A continuación, se presenta el flujo de pantallas de nuestro proyecto "L3V3L_UP_T3K" con sus vistas específicas:
+
+# Flujo de Pantallas  🖥️
+
+
+## A continuación, se presenta el flujo de pantallas de nuestro proyecto "L3V3L_UP_T3K" con sus vistas específicas:
 
 1. **Pantalla de Inicio / Inicio de Sesión**
    - **Rutas:** `/` y `/login`
