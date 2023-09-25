@@ -22,3 +22,10 @@ services :
         - "80:80"
       depends_on:
         - postgres
+    
+    app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "5000:5000"  # Puertos para exponer tu aplicación

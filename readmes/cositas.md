@@ -67,3 +67,12 @@ LO MAS COMPLICADO INSTALR tesseract is not installed or it's not in your PATH. S
 
 lo instale dezsde brem 
 brew install tesseract
+
+
+Generar el Archivo requirements.txt: Una vez que hayas actualizado tus dependencias, puedes generar o actualizar el archivo requirements.txt para reflejar las versiones actualizadas. Utiliza el siguiente comando:
+pip freeze > requirements.txt
+
+
+CREAR UN AIMAGEN DOCKER
+docker build -t nombre_de_la_imagen .
+docker-compose up
